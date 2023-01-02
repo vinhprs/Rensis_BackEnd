@@ -25,7 +25,7 @@ export class User {
   @Column({default: false})
   isActivate: boolean;
 
-  @Field(() => String)
+  @Field(() => Role)
   @Column({type: 'enum', enum: Role, default: Role.BABY})
   Role!: Role;
 

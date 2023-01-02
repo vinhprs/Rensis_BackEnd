@@ -8,8 +8,18 @@ type User {
   Password: String!
   Otp: String!
   isActivate: Boolean!
-  Role: String!
+  Role: Role!
   isBlocked: Boolean!
+}
+
+enum Role {
+  ADMIN
+  BABY
+  VIP_BABY
+  PREMIUM_BABY
+  NANY
+  VIP_NANY
+  PREMIUM_NANY
 }
 
 type JwtPayload {
@@ -32,7 +42,7 @@ input SignupInput {
   Email: String!
   Password: String!
   Confirm_Password: String!
-  Role: String!
+  Role: Role!
 }
 
 input LoginInput {

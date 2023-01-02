@@ -12,7 +12,7 @@ export class SignupInput {
   @Field(() => String)
   Confirm_Password: string;
 
-  @Field(() => String)
+  @Field(() => Role)
   Role: Role;
 }
 
