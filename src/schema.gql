@@ -3,28 +3,44 @@
 # ------------------------------------------------------
 
 type User {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  User_ID: String!
+  Email: String!
+  Password: String!
+  Otp: String!
+  isActivate: Boolean!
+  Role: String!
+  isBlocked: Boolean!
+}
+
+type JwtPayload {
+  Access_Token: String
+  User: User
 }
 
 type Query {
-  users: [User!]!
-  user(id: Int!): User!
+  getAllUsers: [User!]!
+  getUserByID(userID: String!): User!
 }
 
 type Mutation {
-  createUser(createUserInput: CreateUserInput!): User!
-  updateUser(updateUserInput: UpdateUserInput!): User!
-  removeUser(id: Int!): User!
+  signup(signupInput: SignupInput!): JwtPayload!
+  login(loginInput: LoginInput!): JwtPayload!
+  activateAccount(activateInput: ActivateAccountInput!): Boolean!
 }
 
-input CreateUserInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+input SignupInput {
+  Email: String!
+  Password: String!
+  Confirm_Password: String!
+  Role: String!
 }
 
-input UpdateUserInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+input LoginInput {
+  Email: String!
+  Password: String!
+}
+
+input ActivateAccountInput {
+  Email: String!
+  Otp: String!
 }
