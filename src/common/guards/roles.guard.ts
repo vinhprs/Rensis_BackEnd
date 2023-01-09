@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { Reflector } from "@nestjs/core";
 import { GqlExecutionContext } from "@nestjs/graphql";
 import { Observable } from "rxjs";
-import { ROLES_KEY } from "../../common/decorators/roles.decorator";
+import { ROLES_KEY } from "../decorators/roles.decorator";
 import { Role } from "../../constants/enum";
 import { User } from "../../modules/users/entities/user.entity";
 
