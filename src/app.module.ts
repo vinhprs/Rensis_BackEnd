@@ -9,6 +9,7 @@ import { TypeormService } from './configs/typeorm.config';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './common/guards/roles.guard';
+import { UtilsModule } from './utils/utils.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { RolesGuard } from './common/guards/roles.guard';
     })
     ,
     UsersModule,
-    AuthModule
+    AuthModule,
+    UtilsModule
   ],
   // providers: [{
   //   provide: APP_GUARD,
