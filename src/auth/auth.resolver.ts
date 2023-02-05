@@ -1,5 +1,6 @@
-import { ForbiddenException, HttpException, HttpStatus } from '@nestjs/common';
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { ForbiddenException } from '@nestjs/common';
+import { Resolver, Mutation, Args } from '@nestjs/graphql';
+import { ActivateResponse } from 'src/modules/users/entities/user.entity';
 import { JwtPayload } from '../common/entities/common.entity';
 import { AuthService } from './auth.service';
 import { ActivateAccountInput, LoginInput, SignupInput } from './dto/auth.input';
@@ -34,7 +35,7 @@ export class AuthResolver {
   @Mutation(() => Boolean)
   async activateAccount(
     @Args('activateInput') activateInput: ActivateAccountInput
-  ): Promise<boolean> {
+  ): Promise<ActivateResponse> {
     try {
       return await this.authService.activate(activateInput);
     } catch (e) {
