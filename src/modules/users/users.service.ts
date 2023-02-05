@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable, NotFoundException, UnauthorizedExceptio
 import { InjectRepository } from '@nestjs/typeorm';
 import { ActivateAccountInput, LoginInput, SignupInput } from '../../auth/dto/auth.input';
 import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
+import { ActivateResponse, User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -54,7 +54,7 @@ export class UsersService {
       throw new NotFoundException('This email is not registered!')
     }
     if(!user.isActivate) {
-      throw new UnauthorizedException('Please activate your account before login!')
+      throw new ForbiddenException('Please activate your account before login!')
     }
     const isMatch = await bcrypt.compare(Password, user.Password);
     if(!isMatch) {
@@ -68,22 +68,25 @@ export class UsersService {
   }
 
   async activate(activateInput: ActivateAccountInput)
-  : Promise<boolean> {
+  : Promise<ActivateResponse> {
     const user = await this.getUserByEmail(activateInput.Email);
     if(!user) {
       throw new NotFoundException('Cannot find user')
     }
     if(!user.Otp) {
-      return false;
+      throw new ForbiddenException("Please provide your email for recieving otp code!");
     }
     const isMatch = await bcrypt.compare(activateInput.Otp, user.Otp);
     if(!isMatch) {
-      throw new UnauthorizedException('Invalid otp code')
+      throw new ForbiddenException('Invalid otp code')
     }
     user.Otp = null;
     user.isActivate = true;
 
-    return await this.userRepository.save(user) ? true: false;
+    await this.userRepository.save(user);
+    return {
+      Message: "Successfully activate account!",
+    }
   }
 
 }

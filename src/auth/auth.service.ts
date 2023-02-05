@@ -1,16 +1,18 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtPayload } from '../common/entities/common.entity';
 import { UsersService } from '../modules/users/users.service';
 import { ActivateAccountInput, LoginInput, SignupInput } from './dto/auth.input';
 import { sign } from 'jsonwebtoken';
-import { User } from '../modules/users/entities/user.entity';
-import { UtilsService } from '../utils/utils.service';
+import { ActivateResponse, User } from '../modules/users/entities/user.entity';
+import { EmailService } from '../modules/email/email.service';
+import { UtilsService } from '../modules/utils/utils.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UsersService,
-    private readonly utilsSerivce: UtilsService
+    private readonly emailService: EmailService,
+    private readonly utilsService: UtilsService
   ) {}
 
   async signup(signupInput: SignupInput)
@@ -19,10 +21,10 @@ export class AuthService {
     if(existEmail) {
       throw new UnauthorizedException("This email is exist!")
     }
-    const random = this.utilsSerivce.randomOtp(6);
+    const random = this.utilsService.randomOtp(6);
     const user = await this.userService.signup(signupInput, random);
     const [ email, token ] = await Promise.all([
-      this.utilsSerivce.sendVerifyEmail(user.Email, random),
+      this.emailService.sendVerifyEmail(user.Email, random),
       this.setJwt(user.User_ID)
     ]);
     if(!email) {
@@ -50,7 +52,7 @@ export class AuthService {
   }
 
   async activate(activateInput: ActivateAccountInput)
-  : Promise<boolean> {
+  : Promise<ActivateResponse> {
     return await this.userService.activate(activateInput);
   }
 
