@@ -1,6 +1,7 @@
 import { ObjectType, Field } from '@nestjs/graphql';
 import { Role } from '../../../constants/enum';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Profile } from '../../profiles/entities/profiles';
 
 @ObjectType()
 @Entity()
@@ -32,6 +33,9 @@ export class User {
   @Field(() => Boolean, { defaultValue: false })
   @Column({default: false})
   isBlocked: boolean;
+
+  @OneToOne(() => Profile, profile => profile.User)
+  Profile: Profile;
 }
 
 @ObjectType()

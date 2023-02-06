@@ -4,13 +4,15 @@ import { ActivateAccountInput, LoginInput, SignupInput } from '../../auth/dto/au
 import { Repository } from 'typeorm';
 import { ActivateResponse, User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { ProfilesService } from '../profiles/profiles.service';
 
 @Injectable()
 export class UsersService {
 
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
+    private readonly profilesService: ProfilesService
   ) {}
 
   async getAllUsers()
@@ -83,7 +85,10 @@ export class UsersService {
     user.Otp = null;
     user.isActivate = true;
 
-    await this.userRepository.save(user);
+    await Promise.all([
+      this.userRepository.save(user),
+      this.profilesService.autoGenProfile(user)
+    ]);
     return {
       Message: "Successfully activate account!",
     }
