@@ -1,4 +1,4 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field } from '@nestjs/graphql';
 import { Role } from '../../../constants/enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -32,4 +32,10 @@ export class User {
   @Field(() => Boolean, { defaultValue: false })
   @Column({default: false})
   isBlocked: boolean;
+}
+
+@ObjectType()
+export class ActivateResponse {
+  @Field()
+  Message: string;
 }
