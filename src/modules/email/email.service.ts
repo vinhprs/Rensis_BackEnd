@@ -1,12 +1,13 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
 import * as sg from '@sendgrid/mail';
 import { SendEmailResponse } from './entites/email.entity';
 
 @Injectable()
-export class EmailService {
-  constructor() {
+export class EmailService implements OnModuleInit {
+  onModuleInit() {
     sg.setApiKey(process.env.SENDGRID_API_KEY)
   }
+  
   async sendVerifyEmail(
     to: string,
     randomCode: string
