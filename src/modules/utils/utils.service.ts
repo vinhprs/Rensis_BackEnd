@@ -5,15 +5,15 @@ import { verify } from 'jsonwebtoken';
 @Injectable()
 export class UtilsService {
   randomOtp(length: number): string {
-    const result = Math.random().toString().slice(2, length + 2)
+    const result: string = Math.random().toString().slice(2, length + 2)
     return result;
   }
 
   getUserIdFromHeader(req: Request) : string 
   {
     let idFromHeader = null;
-    const reqHeader = req?.headers?.authorization || "";
-    const token = reqHeader.replace('Bearer ', '');
+    const reqHeader: string = req?.headers?.authorization || "";
+    const token: string = reqHeader.replace('Bearer ', '');
     try {
       verify(token, process.env.JWT_ACCESS_TOKEN_SECRECT, (err, token) => {
         if(err) {

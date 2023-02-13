@@ -14,7 +14,7 @@ export class ProfilesService {
 
   async getProfileById(profileId: string)
   : Promise<Profile> {
-    const profile = await this.profilesRepository.findOne({
+    const profile: Profile = await this.profilesRepository.findOne({
       where: { Profile_ID: profileId }
     })
     return profile;
@@ -23,7 +23,7 @@ export class ProfilesService {
   async createProfile(
     createProfileInput: CreateProfileInput
   ) : Promise<Profile> {
-    const profile = this.profilesRepository.create(createProfileInput);
+    const profile: Profile = this.profilesRepository.create(createProfileInput);
 
     return await this.profilesRepository.save(profile);
   }
@@ -31,7 +31,7 @@ export class ProfilesService {
   async autoGenProfile(
     user: User
   ) : Promise<void> {
-    const profile = new Profile();
+    const profile: Profile = new Profile();
     profile.User = user;
     profile.Profile_Name = user.Email;
 

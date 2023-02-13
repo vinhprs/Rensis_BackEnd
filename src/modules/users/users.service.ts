@@ -21,7 +21,7 @@ export class UsersService {
   }
   async getUserById(User_ID: string)
   : Promise<User> {
-    const user = await this.userRepository.findOne({
+    const user: User = await this.userRepository.findOne({
       where: { User_ID }
     });
 
@@ -30,7 +30,7 @@ export class UsersService {
 
   async getUserByEmail(Email: string)
   : Promise<User> {
-    const user = await this.userRepository.findOne({
+    const user: User = await this.userRepository.findOne({
       where: { Email }
     })
 
@@ -39,7 +39,7 @@ export class UsersService {
 
   async signup(signupInput: SignupInput, random: string)
   : Promise<User> {
-    const user = this.userRepository.create(signupInput);
+    const user: User = this.userRepository.create(signupInput);
     [ user.Password, user.Otp ] = await Promise.all([
       bcrypt.hash(signupInput.Password, 12),
       bcrypt.hash(random, 12)
@@ -51,14 +51,14 @@ export class UsersService {
   async validateLoginInput(loginInput: LoginInput)
   : Promise<User> {
     const { Email, Password } = loginInput;
-    const user = await this.getUserByEmail(Email);
+    const user: User = await this.getUserByEmail(Email);
     if(!user) {
       throw new NotFoundException('This email is not registered!')
     }
     if(!user.isActivate) {
       throw new ForbiddenException('Please activate your account before login!')
     }
-    const isMatch = await bcrypt.compare(Password, user.Password);
+    const isMatch: boolean = await bcrypt.compare(Password, user.Password);
     if(!isMatch) {
       throw new UnauthorizedException('Incorrect password!')
     }
@@ -71,14 +71,14 @@ export class UsersService {
 
   async activate(activateInput: ActivateAccountInput)
   : Promise<ActivateResponse> {
-    const user = await this.getUserByEmail(activateInput.Email);
+    const user: User = await this.getUserByEmail(activateInput.Email);
     if(!user) {
       throw new NotFoundException('Cannot find user')
     }
     if(!user.Otp) {
       throw new ForbiddenException("Please provide your email for recieving otp code!");
     }
-    const isMatch = await bcrypt.compare(activateInput.Otp, user.Otp);
+    const isMatch: boolean = await bcrypt.compare(activateInput.Otp, user.Otp);
     if(!isMatch) {
       throw new ForbiddenException('Invalid otp code')
     }

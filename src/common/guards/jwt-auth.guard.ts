@@ -6,7 +6,7 @@ import { AuthenticationError } from "apollo-server-express";
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
     getRequest(context: ExecutionContext) {
-        const ctx = GqlExecutionContext.create(context);
+        const ctx: GqlExecutionContext = GqlExecutionContext.create(context);
         return ctx.getContext().req;
     }
 
