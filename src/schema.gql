@@ -2,6 +2,59 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Expectation {
+  Expectation_ID: String!
+  Age: Int!
+  Characteristics: BabyCharacteristics!
+  Distance: Float!
+  Paid: Float!
+  Type: String!
+  Description: String!
+}
+
+enum BabyCharacteristics {
+  CONFIDENT
+  DYNAMIC
+  SHY
+  DOCILE
+  NAUGHTY
+}
+
+type ProfileImage {
+  Profile_Images_ID: String!
+  Image_Url: String!
+  isAvatar: Boolean!
+  Profile: Profile!
+}
+
+type Education {
+  Education_ID: String!
+  Title: String!
+  Certificate_Place: String!
+  Level: String!
+  Graduation_Time: DateTime!
+  Profile: Profile!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Profile {
+  Profile_ID: String!
+  Profile_Name: String!
+  Nick_Name: String
+  Hobby: String
+  Age: Int
+  Characteristics: BabyCharacteristics
+  Description: String
+  User: User!
+  Expectations: Expectation
+  Profile_Images: [ProfileImage!]
+  Educations: [Education!]
+}
+
 type User {
   User_ID: String!
   Email: String!
@@ -19,7 +72,10 @@ enum Role {
   PREMIUM_BABY
   NANY
   VIP_NANY
-  PREMIUM_NANY
+}
+
+type ActivateResponse {
+  Message: String!
 }
 
 type JwtPayload {
@@ -30,12 +86,28 @@ type JwtPayload {
 type Query {
   getAllUsers: [User!]!
   getUserByID(userID: String!): User!
+  getProfileById(Profile_ID: String!): Profile!
+  expectations: [Expectation!]!
+  expectation(id: Int!): Expectation!
+  profileImages: [ProfileImage!]!
+  profileImage(id: Int!): ProfileImage!
+  educations: [Education!]!
+  education(id: Int!): Education!
 }
 
 type Mutation {
   signup(signupInput: SignupInput!): JwtPayload!
   login(loginInput: LoginInput!): JwtPayload!
-  activateAccount(activateInput: ActivateAccountInput!): Boolean!
+  activateAccount(activateInput: ActivateAccountInput!): ActivateResponse!
+  createExpectation(createExpectationInput: CreateExpectationInput!): Expectation!
+  updateExpectation(updateExpectationInput: UpdateExpectationInput!): Expectation!
+  removeExpectation(id: Int!): Expectation!
+  createProfileImage(createProfileImageInput: CreateProfileImageInput!): ProfileImage!
+  updateProfileImage(updateProfileImageInput: UpdateProfileImageInput!): ProfileImage!
+  removeProfileImage(id: Int!): ProfileImage!
+  createEducation(createEducationInput: CreateEducationInput!): Education!
+  updateEducation(updateEducationInput: UpdateEducationInput!): Education!
+  removeEducation(id: Int!): Education!
 }
 
 input SignupInput {
@@ -53,4 +125,37 @@ input LoginInput {
 input ActivateAccountInput {
   Email: String!
   Otp: String!
+}
+
+input CreateExpectationInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateExpectationInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateProfileImageInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateProfileImageInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateEducationInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateEducationInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }

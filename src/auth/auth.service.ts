@@ -6,6 +6,7 @@ import { sign } from 'jsonwebtoken';
 import { ActivateResponse, User } from '../modules/users/entities/user.entity';
 import { EmailService } from '../modules/email/email.service';
 import { UtilsService } from '../modules/utils/utils.service';
+import { SendEmailResponse } from 'src/modules/email/entites/email.entity';
 
 @Injectable()
 export class AuthService {
@@ -17,12 +18,12 @@ export class AuthService {
 
   async signup(signupInput: SignupInput)
   : Promise<JwtPayload> {
-    const existEmail = await this.userService.getUserByEmail(signupInput.Email);
+    const existEmail: User = await this.userService.getUserByEmail(signupInput.Email);
     if(existEmail) {
       throw new UnauthorizedException("This email is exist!")
     }
-    const random = this.utilsService.randomOtp(6);
-    const user = await this.userService.signup(signupInput, random);
+    const random: string = this.utilsService.randomOtp(6);
+    const user: User = await this.userService.signup(signupInput, random);
     const [ email, token ] = await Promise.all([
       this.emailService.sendVerifyEmail(user.Email, random),
       this.setJwt(user.User_ID)
@@ -43,7 +44,7 @@ export class AuthService {
     const accessToken = sign({id: userId}, process.env.JWT_ACCESS_TOKEN_SECRECT, {
       expiresIn: +process.env.JWT_ACCESS_TOKEN_AGE
     });
-    const user = await this.userService.getUserById(userId);
+    const user: User= await this.userService.getUserById(userId);
     const jwt : JwtPayload = new JwtPayload();
     jwt.Access_Token = accessToken;
     jwt.User = user;
