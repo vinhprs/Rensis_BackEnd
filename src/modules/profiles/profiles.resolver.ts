@@ -1,7 +1,12 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { ProfilesService } from './profiles.service';
 import { Profile } from './entities/profiles';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, UseGuards } from '@nestjs/common';
+import { ProfileImage } from '../profile-images/entities/profile-image.entity';
+import { FileUpload } from '../../common/interfaces/common.interface';
+import { Request } from 'express';
+import { UploadImageInput } from './dto/uploadImage.input';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
 @Resolver(() => Profile)
 export class ProfilesResolver {
@@ -15,6 +20,32 @@ export class ProfilesResolver {
   ) : Promise<Profile> {
     try {
       return await this.profilesService.getProfileById(profileId);
+    } catch(e) {
+      throw new BadRequestException(e.message);
+    }
+  }
+
+  @Mutation(() => ProfileImage)
+  @UseGuards(JwtAuthGuard)
+  async uploadAvatar(
+    @Args('images') image: UploadImageInput,
+    @Context('req') req: Request
+  ) : Promise<ProfileImage> {
+    try {
+      return await this.profilesService.uploadAvatar(image, req);
+    } catch(e) {
+      throw new BadRequestException(e.message);
+    }
+  }
+
+  @Mutation(() => [ProfileImage])
+  @UseGuards(JwtAuthGuard)
+  async uploadProfileImages(
+    @Args('images') images: UploadImageInput,
+    @Context('req') req: Request
+  ) : Promise<ProfileImage[]> {
+    try {
+      return await this.profilesService.uploadProfileImages(images, req);
     } catch(e) {
       throw new BadRequestException(e.message);
     }
