@@ -87,6 +87,7 @@ type Query {
   getAllUsers: [User!]!
   getUserByID(userID: String!): User!
   getProfileById(Profile_ID: String!): Profile!
+  getCurrentUserProfile: Profile!
   expectations: [Expectation!]!
   expectation(id: Int!): Expectation!
   educations: [Education!]!

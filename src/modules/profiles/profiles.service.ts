@@ -40,6 +40,13 @@ export class ProfilesService {
     return profile;
   }
 
+  async getCurrentUserProfile(req: Request) {
+    const userId: string = this.utilsService.getUserIdFromHeader(req);
+    const currentUserProfile: Profile = await this.getProfileByUserId(userId);
+    
+    return currentUserProfile;
+  }
+
   async createProfile(
     createProfileInput: CreateProfileInput
   ) : Promise<Profile> {

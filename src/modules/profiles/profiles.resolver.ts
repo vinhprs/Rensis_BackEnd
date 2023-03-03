@@ -3,7 +3,6 @@ import { ProfilesService } from './profiles.service';
 import { Profile } from './entities/profiles';
 import { BadRequestException, UseGuards } from '@nestjs/common';
 import { ProfileImage } from '../profile-images/entities/profile-image.entity';
-import { FileUpload } from '../../common/interfaces/common.interface';
 import { Request } from 'express';
 import { UploadImageInput } from './dto/uploadImage.input';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
@@ -20,6 +19,18 @@ export class ProfilesResolver {
   ) : Promise<Profile> {
     try {
       return await this.profilesService.getProfileById(profileId);
+    } catch(e) {
+      throw new BadRequestException(e.message);
+    }
+  }
+
+  @Query(() => Profile)
+  @UseGuards(JwtAuthGuard)
+  async getCurrentUserProfile(
+    @Context('req') req: Request
+  ) : Promise<Profile> {
+    try {
+      return await this.profilesService.getCurrentUserProfile(req);
     } catch(e) {
       throw new BadRequestException(e.message);
     }
