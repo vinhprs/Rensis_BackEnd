@@ -87,28 +87,34 @@ type Query {
   getAllUsers: [User!]!
   getUserByID(userID: String!): User!
   getProfileById(Profile_ID: String!): Profile!
+  getCurrentUserProfile: Profile!
   expectations: [Expectation!]!
   expectation(id: Int!): Expectation!
-  profileImages: [ProfileImage!]!
-  profileImage(id: Int!): ProfileImage!
   educations: [Education!]!
   education(id: Int!): Education!
 }
 
 type Mutation {
+  uploadAvatar(images: UploadImageInput!): ProfileImage!
+  uploadProfileImages(images: UploadImageInput!): [ProfileImage!]!
   signup(signupInput: SignupInput!): JwtPayload!
   login(loginInput: LoginInput!): JwtPayload!
   activateAccount(activateInput: ActivateAccountInput!): ActivateResponse!
   createExpectation(createExpectationInput: CreateExpectationInput!): Expectation!
   updateExpectation(updateExpectationInput: UpdateExpectationInput!): Expectation!
   removeExpectation(id: Int!): Expectation!
-  createProfileImage(createProfileImageInput: CreateProfileImageInput!): ProfileImage!
-  updateProfileImage(updateProfileImageInput: UpdateProfileImageInput!): ProfileImage!
-  removeProfileImage(id: Int!): ProfileImage!
   createEducation(createEducationInput: CreateEducationInput!): Education!
   updateEducation(updateEducationInput: UpdateEducationInput!): Education!
   removeEducation(id: Int!): Education!
 }
+
+input UploadImageInput {
+  Avatar: Upload = null
+  Profile_Images: [Upload!] = null
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 input SignupInput {
   Email: String!
@@ -133,17 +139,6 @@ input CreateExpectationInput {
 }
 
 input UpdateExpectationInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
-}
-
-input CreateProfileImageInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
-input UpdateProfileImageInput {
   """Example field (placeholder)"""
   exampleField: Int
   id: Int!

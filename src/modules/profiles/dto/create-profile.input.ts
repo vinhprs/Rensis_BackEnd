@@ -28,8 +28,6 @@ export class CreateProfileInput {
   @Field(() => User)
   User: User;
 
-  @OneToOne(() => Profile, profile => profile)
-  @JoinColumn({name: "Expectation_ID"})
   @Field(() => Expectation, {nullable: true, defaultValue: null})
   Expectation: Expectation;
 }
