@@ -1,26 +1,37 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Request } from 'express';
+import { Repository } from 'typeorm';
+import { Profile } from '../profiles/entities/profiles';
+import { ProfilesService } from '../profiles/profiles.service';
+import { UtilsService } from '../utils/utils.service';
 import { CreateEducationInput } from './dto/create-education.input';
-import { UpdateEducationInput } from './dto/update-education.input';
+import { Education } from './entities/education.entity';
 
 @Injectable()
 export class EducationsService {
-  create(createEducationInput: CreateEducationInput) {
-    return 'This action adds a new education';
-  }
+  constructor(
+    @InjectRepository(Education)
+    private readonly educationRepository: Repository<Education>,
+    private readonly profileService: ProfilesService,
+    private readonly utilsService: UtilsService
+  ) {}
 
-  findAll() {
-    return `This action returns all educations`;
-  }
+  async createEducation(
+    createEducationInput: CreateEducationInput,
+    req: Request
+  ) : Promise<Education> {
+    const { Title, Certificate_Place, Level, Graduation_Time } = createEducationInput;
+    const userId: string = this.utilsService.getUserIdFromHeader(req);
+    const profile: Profile = await this.profileService.getProfileByUserId(userId);
 
-  findOne(id: number) {
-    return `This action returns a #${id} education`;
-  }
+    const newEducation: Education = new Education();
+    newEducation.Title = Title;
+    newEducation.Certificate_Place = Certificate_Place;
+    newEducation.Level = Level;
+    newEducation.Graduation_Time = Graduation_Time;
+    newEducation.Profile = profile;
 
-  update(id: number, updateEducationInput: UpdateEducationInput) {
-    return `This action updates a #${id} education`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} education`;
+    return await this.educationRepository.save(newEducation);
   }
 }

@@ -9,7 +9,6 @@ import { Request } from 'express';
 import { UtilsService } from '../utils/utils.service';
 import { ProfileImagesService } from '../profile-images/profile-images.service';
 import { UploadImageInput } from './dto/uploadImage.input';
-import { FileUpload } from 'src/common/interfaces/common.interface';
 
 @Injectable()
 export class ProfilesService {

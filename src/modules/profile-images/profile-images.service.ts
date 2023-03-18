@@ -21,7 +21,7 @@ export class ProfileImagesService {
   async uploadProfileAvatar(
     profileId: string, avatar: Promise<FileUpload>
   ): Promise<ProfileImage>  {
-    const profileImage: ProfileImage = new ProfileImage();
+    const profileImage: ProfileImage = this.profileImagesRepository.create();
     profileImage.Image_Url
     = (await this.uploadService.uploadFile(avatar, process.env.CLOUDINARY_PROFILE_FOLDER)).url;
     profileImage.isAvatar = true;
@@ -42,7 +42,6 @@ export class ProfileImagesService {
       profileImage.Profile = profile;
       return await this.profileImagesRepository.save(profileImage);
     }));
-    console.log(uploadedImages)
 
     return uploadedImages;
   }
