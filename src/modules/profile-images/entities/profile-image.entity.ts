@@ -13,8 +13,8 @@ export class ProfileImage {
   @Field(() => String)
   Image_Url: string;
 
-  @Column()
-  @Field(() => Boolean)
+  @Column({default: false})
+  @Field(() => Boolean, {defaultValue: false})
   isAvatar: boolean;
 
   @ManyToOne(() => Profile, profile => profile.Profile_Images)
