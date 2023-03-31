@@ -28,9 +28,10 @@ export class ProfilesService {
     return profile;
   }
 
-  async getProfileByUserId(
-    userId: string
+  async getProfileFromHeader(
+    req: Request
   ) : Promise<Profile> {
+    const userId: string = this.utilsService.getUserIdFromHeader(req);
     const profile: Profile = await this.profilesRepository.findOne({
       where: {User: {
         User_ID: userId
@@ -40,8 +41,7 @@ export class ProfilesService {
   }
 
   async getCurrentUserProfile(req: Request) {
-    const userId: string = this.utilsService.getUserIdFromHeader(req);
-    const currentUserProfile: Profile = await this.getProfileByUserId(userId);
+    const currentUserProfile: Profile = await this.getProfileFromHeader(req);
     
     return currentUserProfile;
   }
@@ -68,8 +68,7 @@ export class ProfilesService {
     image: UploadImageInput,
     req: Request
   ): Promise<ProfileImage> {
-    const userId: string = this.utilsService.getUserIdFromHeader(req);
-    const profile = await this.getProfileByUserId(userId);
+    const profile = await this.getProfileFromHeader(req);
     return await this.profileImagesService.uploadProfileAvatar(profile.Profile_ID, image.Avatar);
   }
 
@@ -78,7 +77,7 @@ export class ProfilesService {
     req: Request
   ): Promise<ProfileImage[]> {
     const userId: string = this.utilsService.getUserIdFromHeader(req);
-    const profile = await this.getProfileByUserId(userId);
+    const profile = await this.getProfileFromHeader(req);
     return await this.profileImagesService.uploadProfileImages(profile.Profile_ID, images.Profile_Images);
   } 
   

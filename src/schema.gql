@@ -59,7 +59,7 @@ type User {
   User_ID: String!
   Email: String!
   Password: String!
-  Otp: String!
+  Otp: String
   isActivate: Boolean!
   Role: Role!
   isBlocked: Boolean!
@@ -90,8 +90,6 @@ type Query {
   getCurrentUserProfile: Profile!
   expectations: [Expectation!]!
   expectation(id: Int!): Expectation!
-  educations: [Education!]!
-  education(id: Int!): Education!
 }
 
 type Mutation {
@@ -104,8 +102,6 @@ type Mutation {
   updateExpectation(updateExpectationInput: UpdateExpectationInput!): Expectation!
   removeExpectation(id: Int!): Expectation!
   createEducation(createEducationInput: CreateEducationInput!): Education!
-  updateEducation(updateEducationInput: UpdateEducationInput!): Education!
-  removeEducation(id: Int!): Education!
 }
 
 input UploadImageInput {
@@ -145,12 +141,8 @@ input UpdateExpectationInput {
 }
 
 input CreateEducationInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
-input UpdateEducationInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  Title: String!
+  Certificate_Place: String!
+  Level: String!
+  Graduation_Time: DateTime!
 }

@@ -25,8 +25,19 @@ export class Education {
   @Field(() => Date)
   Graduation_Time: Date;
 
+  @Column({ default: false })
+  @Field(() => Boolean, {defaultValue: false})
+  isDeleted: boolean;
+
   @ManyToOne(() => Profile, profile => profile.Educations)
   @JoinColumn({name: "Profile_ID"})
   @Field(() => Profile)  
   Profile: Profile;
+}
+
+
+@ObjectType()
+export class DeleteEducationResponse {
+  @Field()
+  Message: string;
 }

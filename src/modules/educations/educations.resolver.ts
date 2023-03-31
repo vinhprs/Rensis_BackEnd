@@ -1,10 +1,11 @@
-import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
 import { EducationsService } from './educations.service';
-import { Education } from './entities/education.entity';
+import { DeleteEducationResponse, Education } from './entities/education.entity';
 import { CreateEducationInput } from './dto/create-education.input';
-import { UpdateEducationInput } from './dto/update-education.input';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { UpdateEducationInput } from './dto/update-education.input';
 
 @Resolver(() => Education)
 export class EducationsResolver {
@@ -12,6 +13,7 @@ export class EducationsResolver {
     private readonly educationsService: EducationsService
   ) {}
   
+  @UseGuards(JwtAuthGuard)
   @Mutation(() => Education)
   async createEducation(
     @Args('createEducationInput') createEducationInput: CreateEducationInput,
@@ -23,4 +25,43 @@ export class EducationsResolver {
       throw new BadRequestException(e.message);
     }
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => Education) 
+  async updateEducation(
+    @Args('updateEducationInput') updateEducationInput: UpdateEducationInput,
+    @Context('req') req: Request
+  ) : Promise<Education> {
+    try {
+      return await this.educationsService.updateEducation(updateEducationInput, req);
+    } catch(e) {
+      throw new ForbiddenException(e.message);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => Education) 
+  async deleteEducation(
+    @Args('Education_ID') educationId: string,
+    @Context('req') req: Request
+  ) : Promise<DeleteEducationResponse> {
+    try {
+      return await this.educationsService.deleteEducation(educationId, req);
+    } catch(e) {
+      throw new ForbiddenException(e.message);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => [Education])
+  async getAllEducation(
+    profileId: string
+  ) : Promise<Education[]> {
+    try {
+      return await this.educationsService.getAllEducation(profileId);
+    } catch(e) {
+      throw new BadRequestException(e.message);
+    }
+  }
+  
 }

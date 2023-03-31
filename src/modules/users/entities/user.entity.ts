@@ -18,8 +18,8 @@ export class User {
   @Column()
   Password!: string;
 
-  @Field(() => String)
-  @Column()
+  @Field(() => String, {nullable: true, defaultValue:  null})
+  @Column({nullable: true, default: null})
   Otp!: string;
 
   @Field(() => Boolean, { defaultValue: false })
