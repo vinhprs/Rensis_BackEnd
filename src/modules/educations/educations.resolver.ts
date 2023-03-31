@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Context, Query } from '@nestjs/graphql';
 import { EducationsService } from './educations.service';
 import { DeleteEducationResponse, Education } from './entities/education.entity';
 import { CreateEducationInput } from './dto/create-education.input';
@@ -40,7 +40,7 @@ export class EducationsResolver {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Mutation(() => Education) 
+  @Mutation(() => DeleteEducationResponse) 
   async deleteEducation(
     @Args('Education_ID') educationId: string,
     @Context('req') req: Request
@@ -53,9 +53,9 @@ export class EducationsResolver {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Mutation(() => [Education])
+  @Query(() => [Education])
   async getAllEducation(
-    profileId: string
+    @Args('profileId') profileId: string
   ) : Promise<Education[]> {
     try {
       return await this.educationsService.getAllEducation(profileId);

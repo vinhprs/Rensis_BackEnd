@@ -33,6 +33,7 @@ type Education {
   Certificate_Place: String!
   Level: String!
   Graduation_Time: DateTime!
+  isDeleted: Boolean!
   Profile: Profile!
 }
 
@@ -40,6 +41,10 @@ type Education {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+type DeleteEducationResponse {
+  Message: String!
+}
 
 type Profile {
   Profile_ID: String!
@@ -90,6 +95,7 @@ type Query {
   getCurrentUserProfile: Profile!
   expectations: [Expectation!]!
   expectation(id: Int!): Expectation!
+  getAllEducation(profileId: String!): [Education!]!
 }
 
 type Mutation {
@@ -102,6 +108,8 @@ type Mutation {
   updateExpectation(updateExpectationInput: UpdateExpectationInput!): Expectation!
   removeExpectation(id: Int!): Expectation!
   createEducation(createEducationInput: CreateEducationInput!): Education!
+  updateEducation(updateEducationInput: UpdateEducationInput!): Education!
+  deleteEducation(Education_ID: String!): DeleteEducationResponse!
 }
 
 input UploadImageInput {
@@ -145,4 +153,12 @@ input CreateEducationInput {
   Certificate_Place: String!
   Level: String!
   Graduation_Time: DateTime!
+}
+
+input UpdateEducationInput {
+  Title: String
+  Certificate_Place: String
+  Level: String
+  Graduation_Time: DateTime
+  Education_ID: String!
 }

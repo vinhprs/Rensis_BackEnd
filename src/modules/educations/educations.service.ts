@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Request } from 'express';
+import e, { Request } from 'express';
 import { Repository } from 'typeorm';
 import { Profile } from '../profiles/entities/profiles';
 import { ProfilesService } from '../profiles/profiles.service';
@@ -40,6 +40,9 @@ export class EducationsService {
     const education: Education = await this.educationRepository.findOne({
       where: {
         Education_ID
+      },
+      relations: {
+        Profile: true
       }
     });
 
@@ -100,6 +103,7 @@ export class EducationsService {
 
     const education: Education = await this.getEducationById(educationId);
     education.isDeleted = true;
+    await this.educationRepository.save(education);
     return {
       Message: "Delete education succesfully!"
     };
