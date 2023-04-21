@@ -19,8 +19,12 @@ export class User {
   Password!: string;
 
   @Field(() => String)
-  @Column()
+  @Column({nullable: true})
   Otp!: string;
+
+  @Field(() => String)
+  @Column({nullable: true})
+  Reset_Password_Otp!: string;
 
   @Field(() => Boolean, { defaultValue: false })
   @Column({default: false})
@@ -40,6 +44,12 @@ export class User {
 
 @ObjectType()
 export class ActivateResponse {
+  @Field()
+  Message: string;
+}
+
+@ObjectType()
+export class ForgotPassResponse {
   @Field()
   Message: string;
 }

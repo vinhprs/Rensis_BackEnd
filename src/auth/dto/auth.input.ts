@@ -33,3 +33,15 @@ export class ActivateAccountInput {
   @Field(() => String)
   Otp: string;
 }
+
+@InputType() 
+export class ResetPasswordInput {
+  @Field(() => String)
+  Otp: string;
+
+  @Field(() => String)
+  newPassword: string;
+
+  @Field(() => String)
+  userId: string;
+}

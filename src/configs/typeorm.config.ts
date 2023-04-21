@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from "@nestjs/typeorm";
-import { Education } from "../modules/educations/entities/education.entity";
 import { ProfileImage } from "../modules/profile-images/entities/profile-image.entity";
 import { Expectation } from "../modules/expectations/entities/expectation.entity";
 import { Profile } from"../modules/profiles/entities/profiles";
@@ -20,8 +19,7 @@ export class TypeormService implements TypeOrmOptionsFactory {
                 User,
                 Profile,
                 ProfileImage,
-                Expectation,
-                Education
+                Expectation
             ],
             synchronize: true
         }

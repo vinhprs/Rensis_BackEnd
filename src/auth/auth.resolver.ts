@@ -1,9 +1,9 @@
-import { ForbiddenException } from '@nestjs/common';
+import { ForbiddenException, InternalServerErrorException } from '@nestjs/common';
 import { Resolver, Mutation, Args } from '@nestjs/graphql';
-import { ActivateResponse } from '../modules/users/entities/user.entity';
+import { ActivateResponse, ForgotPassResponse, User } from '../modules/users/entities/user.entity';
 import { JwtPayload } from '../common/entities/common.entity';
 import { AuthService } from './auth.service';
-import { ActivateAccountInput, LoginInput, SignupInput } from './dto/auth.input';
+import { ActivateAccountInput, LoginInput, ResetPasswordInput, SignupInput } from './dto/auth.input';
 
 @Resolver()
 export class AuthResolver {
@@ -39,6 +39,28 @@ export class AuthResolver {
     try {
       return await this.authService.activate(activateInput);
     } catch (e) {
+      throw new ForbiddenException(e.message);
+    }
+  }
+
+  @Mutation(() => ForgotPassResponse)
+  async forgotPassword(
+    @Args('email') email: string
+  ) : Promise<ForgotPassResponse> {
+    try {
+      return await this.authService.forgotPassword(email);
+    } catch(e) {
+      throw new InternalServerErrorException(e.message);
+    }
+  }
+
+  @Mutation(() => User) 
+  async resetPassword(
+    @Args('resetPasswordInput') resetPasswordInput: ResetPasswordInput
+  ) : Promise<User> {
+    try {
+      return this.authService.resetPassword(resetPasswordInput);
+    } catch(e) {
       throw new ForbiddenException(e.message);
     }
   }

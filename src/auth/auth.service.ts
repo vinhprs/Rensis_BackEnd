@@ -1,12 +1,11 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtPayload } from '../common/entities/common.entity';
 import { UsersService } from '../modules/users/users.service';
-import { ActivateAccountInput, LoginInput, SignupInput } from './dto/auth.input';
+import { ActivateAccountInput, LoginInput, ResetPasswordInput, SignupInput } from './dto/auth.input';
 import { sign } from 'jsonwebtoken';
-import { ActivateResponse, User } from '../modules/users/entities/user.entity';
+import { ActivateResponse, ForgotPassResponse, User } from '../modules/users/entities/user.entity';
 import { EmailService } from '../modules/email/email.service';
 import { UtilsService } from '../modules/utils/utils.service';
-import { SendEmailResponse } from 'src/modules/email/entites/email.entity';
 
 @Injectable()
 export class AuthService {
@@ -55,6 +54,28 @@ export class AuthService {
   async activate(activateInput: ActivateAccountInput)
   : Promise<ActivateResponse> {
     return await this.userService.activate(activateInput);
+  }
+
+  async forgotPassword(email: string)
+  : Promise<ForgotPassResponse> {
+    const user = await this.userService.getUserByEmail(email);
+    if(!user || !user.isActivate) {
+      throw new NotFoundException('Not found email!');
+    }
+    const random: string = this.utilsService.randomOtp(6);
+    await Promise.all([
+      this.userService.createOtpResetPassword(email, random),
+      this.emailService.sendResetPasswordEmail(email, random)
+    ]);
+
+    return {
+      Message: "An otp code is sent to your email"
+    }
+  }
+
+  async resetPassword(resetPasswordInput: ResetPasswordInput)
+  : Promise<User> {
+    return await this.userService.validateResetPassInput(resetPasswordInput);
   }
 
 }

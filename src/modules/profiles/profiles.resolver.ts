@@ -61,4 +61,5 @@ export class ProfilesResolver {
       throw new BadRequestException(e.message);
     }
   }
+
 }

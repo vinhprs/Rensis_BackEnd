@@ -4,7 +4,6 @@ import { User } from '../../users/entities/user.entity';
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Expectation } from '../../expectations/entities/expectation.entity';
 import { ProfileImage } from '../../profile-images/entities/profile-image.entity';
-import { Education } from '../../educations/entities/education.entity';
 
 @ObjectType()
 @Entity()
@@ -24,6 +23,10 @@ export class Profile {
   @Field(() => String, {nullable: true, defaultValue: null})
   @Column({nullable: true, default: null})
   Hobby: string;
+
+  @Field(() => String, {nullable: true})
+  @Column({nullable: true})
+  Education: string;
 
   @Field(() => Int, {nullable: true, defaultValue: null})
   @Column({nullable: true, default: null})
@@ -51,7 +54,4 @@ export class Profile {
   @Field(() => [ProfileImage], {nullable: true, defaultValue: null})
   Profile_Images?: ProfileImage[];
 
-  @OneToMany(() => Education, education => education.Profile)
-  @Field(() => [Education], {nullable: true, defaultValue: null})
-  Educations?: Education[];
 }

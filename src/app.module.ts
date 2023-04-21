@@ -13,7 +13,6 @@ import { UtilsModule } from './modules/utils/utils.module';
 import { ProfilesModule } from './modules/profiles/profiles.module';
 import { ExpectationsModule } from './modules/expectations/expectations.module';
 import { ProfileImagesModule } from './modules/profile-images/profile-images.module';
-import { EducationsModule } from './modules/educations/educations.module';
 
 @Module({
   imports: [
@@ -35,7 +34,6 @@ import { EducationsModule } from './modules/educations/educations.module';
     ProfilesModule,
     ExpectationsModule,
     ProfileImagesModule,
-    EducationsModule
   ],
 })
 export class AppModule {}

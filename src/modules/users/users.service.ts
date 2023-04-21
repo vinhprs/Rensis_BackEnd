@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ActivateAccountInput, LoginInput, SignupInput } from '../../auth/dto/auth.input';
+import { ActivateAccountInput, LoginInput, ResetPasswordInput, SignupInput } from '../../auth/dto/auth.input';
 import { Repository } from 'typeorm';
 import { ActivateResponse, User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
@@ -92,6 +92,34 @@ export class UsersService {
     return {
       Message: "Successfully activate account!",
     }
+  }
+
+  async createOtpResetPassword(email: string, otp: string)
+  : Promise<User> {
+    const user = await this.getUserByEmail(email);
+    user.Reset_Password_Otp = otp;
+
+    return await this.userRepository.save(user);
+  }
+
+  async validateResetPassInput(resetPasswordInput: ResetPasswordInput)
+  : Promise<User> {
+    const { userId, newPassword, Otp } = resetPasswordInput;
+    const user = await this.getUserById(userId);
+    if(!user) {
+      throw new NotFoundException('Not found user');
+    }
+    if(!user.Reset_Password_Otp) {
+      throw new ForbiddenException('Please enter your email to receive otp');
+    }
+    const isMatch: boolean = Otp === user.Reset_Password_Otp;
+    if(!isMatch) {
+      throw new ForbiddenException('Incorrect otp');
+    }
+    user.Password = await bcrypt.hash(newPassword, 12);
+    user.Reset_Password_Otp = null;
+
+    return await this.userRepository.save(user);
   }
 
 }
