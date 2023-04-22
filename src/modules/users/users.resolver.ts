@@ -1,7 +1,7 @@
 import { Resolver, Query, Args } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
-import { ForbiddenException, UseGuards } from '@nestjs/common';
+import { ForbiddenException, InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { Role } from '../../constants/enum';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -29,7 +29,18 @@ export class UsersResolver {
     try {
       return await this.usersService.getUserById(userId);
     } catch (e) {
-      throw new ForbiddenException(e.message);
+      throw new InternalServerErrorException(e.message);
+    }
+  }
+
+  @Query(() => User)
+  async getUserByEmail(
+    @Args('email') email: string
+  ) : Promise<User> {
+    try {
+      return await this.usersService.getUserByEmail(email);
+    } catch (e) {
+      throw new InternalServerErrorException(e.message);
     }
   }
 }
