@@ -28,7 +28,7 @@ export class LoginInput {
 @InputType()
 export class ActivateAccountInput {
   @Field(() => String)
-  Email: string;
+  User_ID: string;
 
   @Field(() => String)
   Otp: string;

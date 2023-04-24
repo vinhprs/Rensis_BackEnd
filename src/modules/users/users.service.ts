@@ -71,7 +71,7 @@ export class UsersService {
 
   async activate(activateInput: ActivateAccountInput)
   : Promise<ActivateResponse> {
-    const user: User = await this.getUserByEmail(activateInput.Email);
+    const user: User = await this.getUserById(activateInput.User_ID);
     if(!user) {
       throw new NotFoundException('Cannot find user')
     }
