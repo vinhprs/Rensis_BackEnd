@@ -1,11 +1,12 @@
 import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { ProfilesService } from './profiles.service';
 import { Profile } from './entities/profiles';
-import { BadRequestException, UseGuards } from '@nestjs/common';
+import { InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { ProfileImage } from '../profile-images/entities/profile-image.entity';
 import { Request } from 'express';
 import { UploadImageInput } from './dto/uploadImage.input';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { UpdateProfileInput } from './dto/updateProfile.input';
 
 @Resolver(() => Profile)
 export class ProfilesResolver {
@@ -20,7 +21,7 @@ export class ProfilesResolver {
     try {
       return await this.profilesService.getProfileById(profileId);
     } catch(e) {
-      throw new BadRequestException(e.message);
+      throw new InternalServerErrorException(e.message);
     }
   }
 
@@ -32,7 +33,20 @@ export class ProfilesResolver {
     try {
       return await this.profilesService.getCurrentUserProfile(req);
     } catch(e) {
-      throw new BadRequestException(e.message);
+      throw new InternalServerErrorException(e.message);
+    }
+  }
+
+  @Mutation(() => Profile)
+  @UseGuards(JwtAuthGuard)
+  async updateProfileInfo(
+    @Context('req') req: Request,
+    @Args('updateProfileInput') updateProfileInput: UpdateProfileInput
+  ) : Promise<Profile> {
+    try {
+      return await this.profilesService.updateProfileInfo(req, updateProfileInput);
+    } catch(e) {
+      throw new InternalServerErrorException(e.message);
     }
   }
 
@@ -45,7 +59,7 @@ export class ProfilesResolver {
     try {
       return await this.profilesService.uploadAvatar(image, req);
     } catch(e) {
-      throw new BadRequestException(e.message);
+      throw new InternalServerErrorException(e.message);
     }
   }
 
@@ -58,7 +72,7 @@ export class ProfilesResolver {
     try {
       return await this.profilesService.uploadProfileImages(images, req);
     } catch(e) {
-      throw new BadRequestException(e.message);
+      throw new InternalServerErrorException(e.message);
     }
   }
 

@@ -3,33 +3,35 @@ import { ExpectationsService } from './expectations.service';
 import { Expectation } from './entities/expectation.entity';
 import { CreateExpectationInput } from './dto/create-expectation.input';
 import { UpdateExpectationInput } from './dto/update-expectation.input';
+import { InternalServerErrorException, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
 @Resolver(() => Expectation)
 export class ExpectationsResolver {
-  constructor(private readonly expectationsService: ExpectationsService) {}
-
+  constructor(
+    private readonly expectationsService: ExpectationsService
+  ) {}
+  
   @Mutation(() => Expectation)
-  createExpectation(@Args('createExpectationInput') createExpectationInput: CreateExpectationInput) {
-    return this.expectationsService.create(createExpectationInput);
+  @UseGuards(JwtAuthGuard)
+  async updateExpectation(
+    @Args('updateExpectation') updateExpectation: UpdateExpectationInput
+  ) : Promise<Expectation> {
+    try {
+      return await this.expectationsService.updateExpectation(updateExpectation);
+    } catch(e) {
+      throw new InternalServerErrorException(e.message);
+    }
   }
 
-  @Query(() => [Expectation], { name: 'expectations' })
-  findAll() {
-    return this.expectationsService.findAll();
-  }
-
-  @Query(() => Expectation, { name: 'expectation' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.expectationsService.findOne(id);
-  }
-
-  @Mutation(() => Expectation)
-  updateExpectation(@Args('updateExpectationInput') updateExpectationInput: UpdateExpectationInput) {
-    return this.expectationsService.update(updateExpectationInput.id, updateExpectationInput);
-  }
-
-  @Mutation(() => Expectation)
-  removeExpectation(@Args('id', { type: () => Int }) id: number) {
-    return this.expectationsService.remove(id);
+  @Query(() => Expectation)
+  async getExpectation(
+    @Args('profileID') profileID: string
+  ) : Promise<Expectation> {
+    try {
+      return await this.expectationsService.getExpectation(profileID);
+    } catch(e) {
+      throw new InternalServerErrorException(e.message);
+    }
   }
 }

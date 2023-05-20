@@ -38,7 +38,10 @@ export class User {
   @Column({default: false})
   isBlocked: boolean;
 
-  @OneToOne(() => Profile, profile => profile.User)
+  @OneToOne(() => Profile, profile => profile.User, {
+    eager: true
+  })
+  @Field(() => Profile)
   Profile: Profile;
 }
 

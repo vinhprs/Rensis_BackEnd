@@ -5,12 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Profile } from './entities/profiles';
 import { UtilsModule } from '../utils/utils.module';
 import { ProfileImagesModule } from '../profile-images/profile-images.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Profile]),
     UtilsModule,
-    forwardRef(() => ProfileImagesModule)
+    forwardRef(() => ProfileImagesModule),
+    forwardRef(() => UsersModule)
   ],
   providers: [ProfilesResolver, ProfilesService],
   exports: [ProfilesService]
