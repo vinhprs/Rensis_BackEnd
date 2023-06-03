@@ -3,7 +3,7 @@ import { Field, InputType } from "@nestjs/graphql";
 @InputType()
 export class UpdateProfileInput {
     @Field(() => String, {nullable: true})
-    Nick_Name?: string;
+    Map?: string;
 
     @Field(() => String, {nullable: true})
     Hobby?: string;
