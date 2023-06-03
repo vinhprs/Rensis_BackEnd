@@ -40,6 +40,10 @@ export class Profile {
   @Column({nullable: true, default: null})
   Description: string;
 
+  @Field(() => String, {nullable: true, defaultValue: null})
+  @Column({nullable: true, default: null})
+  Map: string;
+
   @OneToOne(() => User, user => user.Profile)
   @Field(() => User)
   @JoinColumn({name: "User_ID"})
