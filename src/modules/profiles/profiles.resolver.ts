@@ -15,17 +15,6 @@ export class ProfilesResolver {
   ) {}
 
   @Query(() => Profile)
-  async getProfileById(
-    @Args("Profile_ID") profileId: string
-  ) : Promise<Profile> {
-    try {
-      return await this.profilesService.getProfileById(profileId);
-    } catch(e) {
-      throw new InternalServerErrorException(e.message);
-    }
-  }
-
-  @Query(() => Profile)
   @UseGuards(JwtAuthGuard)
   async getCurrentUserProfile(
     @Context('req') req: Request

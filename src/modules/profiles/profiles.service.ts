@@ -24,17 +24,6 @@ export class ProfilesService {
     private readonly userService: UsersService
   ) {}
 
-  async getProfileById(profileId: string)
-  : Promise<Profile> {
-    const profile: Profile = await this.profilesRepository.findOne({
-      where: { Profile_ID: profileId }
-    })
-    if(!profile) {
-      throw new NotFoundException('Not found profile');
-    }
-    return profile;
-  }
-
   async getProfileByUserId(userId: string) : Promise<Profile> {
     const user = await this.userService.getUserById(userId);
     const profile = user.Profile;
