@@ -24,12 +24,23 @@ export class ProfilesService {
     private readonly userService: UsersService
   ) {}
 
+  async getProfileById(profileId: string)
+  : Promise<Profile> {
+    return await this.profilesRepository.findOne({
+      where: {Profile_ID: profileId},
+      relations: ['Profile_Images']
+    })
+  }
+
   async getProfileByUserId(userId: string) : Promise<Profile> {
-    const user = await this.userService.getUserById(userId);
-    const profile = user.Profile;
-    if(!profile) {
-      throw new NotFoundException('Not found profile!');
-    }
+    const profile = await this.profilesRepository.findOne({
+      where: {
+        User: {
+          User_ID: userId
+        }
+      }
+    });
+ 
     return profile;
   }
 
@@ -87,7 +98,7 @@ export class ProfilesService {
     images: UploadImageInput,
     req: Request
   ): Promise<ProfileImage[]> {
-    const userId: string = this.utilsService.getUserIdFromHeader(req);
+    const userId = this.utilsService.getUserIdFromHeader(req);
     const profile = await this.getProfileByUserId(userId);
     return await this.profileImagesService.uploadProfileImages(profile.Profile_ID, images.Profile_Images);
   } 

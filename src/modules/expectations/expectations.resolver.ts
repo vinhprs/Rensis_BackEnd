@@ -26,10 +26,10 @@ export class ExpectationsResolver {
 
   @Query(() => Expectation)
   async getExpectation(
-    @Args('profileID') profileID: string
+    @Args('userId') userId: string
   ) : Promise<Expectation> {
     try {
-      return await this.expectationsService.getExpectation(profileID);
+      return await this.expectationsService.getExpectation(userId);
     } catch(e) {
       throw new InternalServerErrorException(e.message);
     }

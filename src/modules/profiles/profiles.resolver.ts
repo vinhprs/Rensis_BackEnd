@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Context, ResolveField, Parent } from '@nestjs/graphql';
 import { ProfilesService } from './profiles.service';
 import { Profile } from './entities/profiles';
 import { InternalServerErrorException, UseGuards } from '@nestjs/common';
@@ -20,7 +20,7 @@ export class ProfilesResolver {
     @Context('req') req: Request
   ) : Promise<Profile> {
     try {
-      return await this.profilesService.getCurrentUserProfile(req);
+      return this.profilesService.getCurrentUserProfile(req);
     } catch(e) {
       throw new InternalServerErrorException(e.message);
     }
@@ -59,10 +59,19 @@ export class ProfilesResolver {
     @Context('req') req: Request
   ) : Promise<ProfileImage[]> {
     try {
-      return await this.profilesService.uploadProfileImages(images, req);
+      return this.profilesService.uploadProfileImages(images, req);
     } catch(e) {
       throw new InternalServerErrorException(e.message);
     }
+  }
+
+  @ResolveField()
+  async Profile_Images(
+    @Parent() profile: Profile 
+  ) : Promise<ProfileImage[]> {
+    const result = this.profilesService.getProfileByUserId(profile.Profile_ID);
+
+    return (await result).Profile_Images;
   }
 
 }

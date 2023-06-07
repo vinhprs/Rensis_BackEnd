@@ -19,14 +19,14 @@ export class ProfileImagesService {
   ) {}
 
   async uploadProfileAvatar(
-    profileId: string, avatar: Promise<FileUpload>
+    userId: string, avatar: Promise<FileUpload>
   ): Promise<ProfileImage>  {
     const profileImage: ProfileImage = this.profileImagesRepository.create();
     profileImage.Image_Url
     = (await this.uploadService.uploadFile(avatar, process.env.CLOUDINARY_PROFILE_FOLDER)).url;
     profileImage.isAvatar = true;
     
-    const profile: Profile = await this.profileService.getProfileById(profileId);
+    const profile: Profile = await this.profileService.getProfileByUserId(userId);
     profileImage.Profile = profile;
     return await this.profileImagesRepository.save(profileImage);
   }

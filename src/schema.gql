@@ -80,8 +80,7 @@ type Query {
   getAllUsers: [User!]!
   getUserByID(userID: String!): User!
   getUserByEmail(email: String!): User!
-  getExpectation(profileID: String!): Expectation!
-  getProfileById(Profile_ID: String!): Profile!
+  getExpectation(userId: String!): Expectation!
   getCurrentUserProfile: Profile!
 }
 
@@ -109,7 +108,7 @@ input UpdateExpectationInput {
 }
 
 input UpdateProfileInput {
-  Nick_Name: String
+  Map: String
   Hobby: String
   Education: String
   Description: String

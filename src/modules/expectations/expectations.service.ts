@@ -48,9 +48,9 @@ export class ExpectationsService {
     return expectation; 
   }
 
-  async getExpectation(profileID: string)
+  async getExpectation(userId: string)
   : Promise<Expectation> {
-    const profile = await this.profileService.getProfileById(profileID);
+    const profile = await this.profileService.getProfileByUserId(userId);
     return profile.Expectations;
   }
 }
