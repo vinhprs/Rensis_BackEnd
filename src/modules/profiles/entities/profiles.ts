@@ -40,13 +40,18 @@ export class Profile {
   @Column({nullable: true, default: null})
   Description: string;
 
+  @Field(() => String, {nullable: true, defaultValue: null})
+  @Column({nullable: true, default: null})
+  Map: string;
+
   @OneToOne(() => User, user => user.Profile)
   @Field(() => User)
   @JoinColumn({name: "User_ID"})
   User: User;
 
-  @OneToOne(() => Expectation, expect => expect.Profile)
-  @JoinColumn({name: "Expectation_ID"})
+  @OneToOne(() => Expectation, expect => expect.Profile, {
+    eager: true
+  })
   @Field(() => Expectation, {nullable: true, defaultValue: true})
   Expectations?: Expectation;
 

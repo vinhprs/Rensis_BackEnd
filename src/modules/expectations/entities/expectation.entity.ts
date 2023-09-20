@@ -1,6 +1,6 @@
 import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
 import { BabyCharacteristics } from '../../../constants/enum';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Profile } from 'src/modules/profiles/entities/profiles';
 
 @ObjectType()
@@ -10,31 +10,32 @@ export class Expectation {
   @Field(() => String)
   Expectation_ID: string;
 
-  @Column()
-  @Field(() => Int)
-  Age: number;
+  @Column({nullable: true, default: null})
+  @Field(() => Int, {nullable: true})
+  Age?: number;
 
-  @Column()
+  @Column({nullable: true, default: null})
   @Field(() => BabyCharacteristics)
-  Characteristics: BabyCharacteristics;
+  Characteristics?: BabyCharacteristics;
 
-  @Column({type: 'decimal', precision: 10, scale: 2})
+  @Column({type: 'decimal', precision: 10, scale: 2,nullable: true, default: null })
   @Field(() => Float)
-  Distance: number;
+  Distance?: number;
 
-  @Column({type: 'decimal', precision: 10, scale: 2})
+  @Column({type: 'decimal', precision: 10, scale: 2,nullable: true, default: null})
   @Field(() => Float)
-  Paid: number;
+  Paid?: number;
 
-  @Column()
+  @Column({nullable: true, default: null})
   @Field(() => String)
-  Type: string;
+  Type?: string;
 
-  @Column()
+  @Column({nullable: true, default: null})
   @Field(() => String)
-  Description: string;
+  Description?: string;
 
   @OneToOne(() => Profile, profile => profile.Expectations)
+  @JoinColumn({name: "Profile_ID"})
   Profile: Profile;
 
 }

@@ -4,7 +4,7 @@
 
 type Expectation {
   Expectation_ID: String!
-  Age: Int!
+  Age: Int
   Characteristics: BabyCharacteristics!
   Distance: Float!
   Paid: Float!
@@ -36,6 +36,7 @@ type Profile {
   Age: Int
   Characteristics: BabyCharacteristics
   Description: String
+  Map: String
   User: User!
   Expectations: Expectation
   Profile_Images: [ProfileImage!]
@@ -50,6 +51,7 @@ type User {
   isActivate: Boolean!
   Role: Role!
   isBlocked: Boolean!
+  Profile: Profile!
 }
 
 enum Role {
@@ -77,13 +79,14 @@ type JwtPayload {
 type Query {
   getAllUsers: [User!]!
   getUserByID(userID: String!): User!
-  getProfileById(Profile_ID: String!): Profile!
+  getUserByEmail(email: String!): User!
+  getExpectation(userId: String!): Expectation!
   getCurrentUserProfile: Profile!
-  expectations: [Expectation!]!
-  expectation(id: Int!): Expectation!
 }
 
 type Mutation {
+  updateExpectation(updateExpectation: UpdateExpectationInput!): Expectation!
+  updateProfileInfo(updateProfileInput: UpdateProfileInput!): Profile!
   uploadAvatar(images: UploadImageInput!): ProfileImage!
   uploadProfileImages(images: UploadImageInput!): [ProfileImage!]!
   signup(signupInput: SignupInput!): JwtPayload!
@@ -91,9 +94,24 @@ type Mutation {
   activateAccount(activateInput: ActivateAccountInput!): ActivateResponse!
   forgotPassword(email: String!): ForgotPassResponse!
   resetPassword(resetPasswordInput: ResetPasswordInput!): User!
-  createExpectation(createExpectationInput: CreateExpectationInput!): Expectation!
-  updateExpectation(updateExpectationInput: UpdateExpectationInput!): Expectation!
-  removeExpectation(id: Int!): Expectation!
+}
+
+input UpdateExpectationInput {
+  Profile_ID: String
+  Age: Int
+  Characteristics: BabyCharacteristics
+  Distance: Float
+  Paid: Float
+  Type: String
+  Description: String
+  Expectation_ID: String!
+}
+
+input UpdateProfileInput {
+  Map: String
+  Hobby: String
+  Education: String
+  Description: String
 }
 
 input UploadImageInput {
@@ -117,7 +135,7 @@ input LoginInput {
 }
 
 input ActivateAccountInput {
-  Email: String!
+  User_ID: String!
   Otp: String!
 }
 
@@ -125,15 +143,4 @@ input ResetPasswordInput {
   Otp: String!
   newPassword: String!
   userId: String!
-}
-
-input CreateExpectationInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
-input UpdateExpectationInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
 }

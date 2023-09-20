@@ -39,6 +39,7 @@ export class User {
   isBlocked: boolean;
 
   @OneToOne(() => Profile, profile => profile.User)
+  @Field(() => Profile)
   Profile: Profile;
 }
 

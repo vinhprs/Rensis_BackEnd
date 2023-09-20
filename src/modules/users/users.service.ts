@@ -1,10 +1,11 @@
-import { ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, NotFoundException, UnauthorizedException, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ActivateAccountInput, LoginInput, ResetPasswordInput, SignupInput } from '../../auth/dto/auth.input';
 import { Repository } from 'typeorm';
 import { ActivateResponse, User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { ProfilesService } from '../profiles/profiles.service';
+import { ExpectationsService } from '../expectations/expectations.service';
 
 @Injectable()
 export class UsersService {
@@ -12,7 +13,10 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly profilesService: ProfilesService
+    @Inject(forwardRef(() => ProfilesService))
+    private readonly profilesService: ProfilesService,
+    @Inject(forwardRef(() => ExpectationsService))
+    private readonly expectationSerivce: ExpectationsService
   ) {}
 
   async getAllUsers()
@@ -24,6 +28,9 @@ export class UsersService {
     const user: User = await this.userRepository.findOne({
       where: { User_ID }
     });
+    if(!user) {
+      throw new NotFoundException('Not found user');
+    }
 
     return user;
   }
@@ -71,7 +78,8 @@ export class UsersService {
 
   async activate(activateInput: ActivateAccountInput)
   : Promise<ActivateResponse> {
-    const user: User = await this.getUserById(activateInput.User_ID);
+    const userId = activateInput.User_ID;
+    const user: User = await this.getUserById(userId);
     if(!user) {
       throw new NotFoundException('Cannot find user')
     }
@@ -87,8 +95,9 @@ export class UsersService {
 
     await Promise.all([
       this.userRepository.save(user),
-      this.profilesService.autoGenProfile(user)
+      this.profilesService.autoGenProfile(user),
     ]);
+    await this.expectationSerivce.autoGenExpectation(userId);
     return {
       Message: "Successfully activate account!",
     }
